@@ -1,0 +1,406 @@
+# ------------------------------------------------------------------------
+# constants.yml
+# ------------------------------------------------------------------------
+# Copyright (c) 2020
+#   Tyge Løvset, tylo@norceresearch.no
+#
+# NORCE Climate 
+# https://www.norceresearch.no/en/research-area/klima
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# ------------------------------------------------------------------------
+
+mainstring: 'ECMWF-ERAINT_evaluation_r1i1p1_BCCR-WRF381BF_x1n2v1'
+from_date:  '010100'
+to_date:    '123123'
+
+domains:
+    1: EUR-15
+    2: ALP-3
+    
+plevels:        [1000, 925, 850, 700, 500, 200]
+pvars3d:        [zg, ta, hus, ua, va, wa]
+dst_timevar:    time
+dst_timedim:    time
+dst_plevvar:    plev
+dst_reftime:    'days since 1999-01-01 00:00:00'
+missing_value:  1.e+20
+
+# Translate selected dimensions only
+dimensions:
+  Time:         time
+  south_north:  rlat
+  west_east:    rlon
+
+# Translate selected variables from files
+file_vars:
+  wrfpress:
+    T2:         tas
+    GHT_PL:     zg
+    T_PL:       ta
+    HUS_PL:     hus
+    UER_PL:     ua
+    VER_PL:     va
+    W_PL:       wa
+  wrfcdx:
+    CDXTS:      ts 
+    PR:         pr 
+    WSGSMAX:    wsgsmax 
+    UAS:        uas 
+    VAS:        vas 
+    UZ100:      ua100m 
+    VZ100:      va100m 
+    HUSS:       huss 
+    CDXPS:      ps 
+    PSL:        psl 
+    RSDS:       rsds 
+    RLDS:       rlds 
+    HFLS:       hfls 
+    HFSS:       hfss 
+    RSUS:       rsus 
+    RLUS:       rlus 
+    EVSPSBL:    evspsbl 
+    CLTMEAN:    clt 
+    SNC:        snc 
+    SND:        snd 
+    MRROS:      mrros 
+    MRRO:       mrro 
+    PRW:        prw 
+    CLWVI:      clwvi 
+    CLIVI:      clivi 
+    MRSO:       mrso 
+    MRSOL:      mrsol 
+    ZMLAGEN:    zmla 
+    CLGVI:      clgvi 
+    CLHVI:      clhvi 
+    CAPEMAX:    capemax 
+    CINMAX:     cinmax 
+    WSZ100:     wsgsmax100m
+    EVSPSBLPOT: evspsblpot
+  wrfxtrm:
+    T2MAX:      tasmax
+    T2MIN:      tasmin
+    SPDUV10MAX: sfcWindmax
+
+global_attr:
+  Conventions: CF-1.4
+  title: CORDEX Flagsh ERA-Interim Run
+  experiment: Evaluation run with reanalysis forcing
+  experiment_id: evaluation
+  driving_experiment: ECMWF-ERAINT, evaluation, r1i1p1
+  driving_model_id: ECMWF-ERAINT
+  driving_model_ensemble_member: r1i1p1
+  driving_experiment_name: evaluation
+  frequency: 1hr
+  institution: NORCE Climate, Bjerknes Centre for Climate Research
+  institute_id: BCCR
+  model_id: BCCR-WRF381BF
+  nesting_information: x1n2v1
+  project_id: cordex_fpsc
+  product: output
+  bccr_run_performance: Fram Supercomputer at Uninett Sigma
+  SWPP_SHIFTTIME: 'shift: 0, left: 0, right: 0'
+
+variable_attr:
+  capemax:
+    cell_methods: 'time: maximum'
+    grid_mapping: rotated_pole
+    long_name: 2-D Maximum convective available potential energy
+    standard_name: atmosphere_convective_available_potential_energy_wrt_surface
+    units: J kg-1
+  cinmax:
+    cell_methods: 'time: maximum'
+    grid_mapping: rotated_pole
+    long_name: 2-D Maximum convective inhibition
+    standard_name: atmosphere_convective_inhibition_wrt_surface
+    units: J kg-1
+  clgvi:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Vertical integral of mass content of graupel
+    standard_name: atmosphere_mass_content_of_graupel
+    units: kg m-2
+  clhvi:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Vertical integral of mass content of hail
+    standard_name: atmosphere_mass_content_of_hail
+    units: kg m-2
+  clivi:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Ice Water Path
+    standard_name: atmosphere_mass_content_of_cloud_ice
+    units: kg m-2
+  clt:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: total cloud fraction
+    standard_name: cloud_area_fraction
+    units: '1'
+  clwvi:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Condensed Water Path
+    standard_name: atmosphere_mass_content_of_cloud_condensed_water
+    units: kg m-2
+  evspsbl:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Evaporation
+    standard_name: water_evaporation_flux
+    units: kg m-2 s-1
+  evspsblpot:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Potential Evapotranspiration
+    standard_name: water_potential_evaporation_flux
+    units: kg m-2 s-1
+  hfls:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Upward Latent Heat Flux
+    standard_name: surface_upward_heat_flux_in_air
+    units: W m-2
+  hfss:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Upward Sensible Heat Flux
+    standard_name: surface_upward_sensible_heat_flux
+    units: W m-2
+  hus:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Specific Humidity
+    missing_value: 1.0e+20
+    standard_name: specific_humidity
+    units: '1'
+  huss:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Near-Surface Specific Humidity
+    standard_name: specific_humidity
+    units: '1'
+  lat:
+    long_name: latitude
+    standard_name: latitude
+    units: degrees_north
+  lon:
+    long_name: longitude
+    standard_name: longitude
+    units: degrees_east
+  mrro:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Total Runoff
+    standard_name: runoff_flux
+    units: kg m-2 s-1
+  mrros:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Runoff
+    standard_name: surface_runoff_flux
+    units: kg m-2 s-1
+  mrso:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Total Soil Moisture Content
+    standard_name: soil_moisture_content
+    units: kg m-2
+  mrsol:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Total water content of soil layer
+    standard_name: moisture_content_of_soil_layer
+    units: kg m-2
+  plev:
+    axis: Z
+    long_name: pressure
+    positive: down
+    standard_name: air_pressure
+    units: Pa
+  pr:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Precipitation
+    standard_name: precipitation_flux
+    units: kg m-2 s-1
+  prw:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Water Vapour Path
+    standard_name: atmosphere_water_vapor_content
+    units: kg m-2
+  ps:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Surface Air Pressure
+    standard_name: surface_air_pressure
+    units: Pa
+  psl:
+    cell_methods: 'time: point'
+    comment: ECMWF method from the CDXWRF module v1.3
+    grid_mapping: rotated_pole
+    long_name: Sea-Level Pressure
+    standard_name: air_pressure_at_sea_level
+    units: Pa
+  rlds:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Downwelling Longwave Radiation
+    standard_name: surface_downwelling_longwave_flux_in_air
+    units: W m-2
+  rlus:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Upward Longwave Radiation
+    standard_name: surface_upwelling_longwave_flux_in_air
+    units: W m-2
+  rsds:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Downwelling Shortwave Radiation
+    standard_name: surface_downwelling_shortwave_flux_in_air
+    units: W m-2
+  rsus:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: Surface Upward Shortwave Radiation
+    standard_name: surface_upwelling_shortwave_flux_in_air
+    units: W m-2
+  sfcWindmax:
+    cell_methods: 'time: maximum'
+    grid_mapping: rotated_pole
+    long_name: Daily maximum near-surface wind speed
+    standard_name: wind_speed
+    units: m s-1
+  snc:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: snow area fraction
+    standard_name: surface_snow_area_fraction
+    units: '1'
+  snd:
+    cell_methods: 'time: mean'
+    grid_mapping: rotated_pole
+    long_name: snow depth
+    standard_name: surface_snow_thickness
+    units: m
+  ta:
+    cell_methods: 'time: point'
+    coordinates: lon lat plev
+    grid_mapping: rotated_pole
+    long_name: Air Temperature
+    missing_value: 1.0e+20
+    standard_name: air_temperature
+    units: K
+  tas:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Near-Surface Air Temperature
+    standard_name: air_temperature
+    units: K
+  tasmax:
+    cell_methods: 'time: maximum'
+    grid_mapping: rotated_pole
+    long_name: Daily Maximum Near-Surface Air Temperature
+    standard_name: air_temperature
+    units: K
+  tasmin:
+    cell_methods: 'time: minimum'
+    grid_mapping: rotated_pole
+    long_name: Daily Minimum Near-Surface Air Temperature
+    standard_name: air_temperature
+    units: K
+  time:
+    axis: T
+    calendar: standard
+    standard_name: time
+    units: days since 1999-01-01 00:00:00
+  ts:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Surface Temperature
+    standard_name: surface_temperature
+    units: K
+  ua:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Eastward Wind
+    missing_value: 1.0e+20
+    standard_name: eastward_wind
+    units: m s-1
+  ua100m:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Eastward wind at 100m
+    standard_name: eastward_wind
+    units: m s-1
+  uas:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Eastward Near-Surface Wind
+    standard_name: eastward_wind
+    units: m s-1
+  va:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Northward Wind
+    missing_value: 1.0e+20
+    standard_name: northward_wind
+    units: m s-1
+  va100m:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Northward wind at 100m
+    standard_name: northward_wind
+    units: m s-1
+  vas:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Northward Near-Surface Wind
+    standard_name: northward_wind
+    units: m s-1
+  wa:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Upward air velocity
+    missing_value: 1.0e+20
+    standard_name: upward_air_velocity
+    units: m s-1
+  wsgsmax:
+    cell_methods: 'time: maximum'
+    grid_mapping: rotated_pole
+    long_name: Maximum Near-Surface Wind Speed of Gust
+    standard_name: wind_speeed_of_gust
+    units: m s-1
+  wsgsmax100m:
+    cell_methods: 'time: maximum'
+    grid_mapping: rotated_pole
+    long_name: Maximum wind speed of gust at 100m
+    standard_name: wind_speed_of_gust
+    units: m s-1
+  zg:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Geopotential Height
+    missing_value: 1.0e+20
+    standard_name: geopotential_height
+    units: m
+  zmla:
+    cell_methods: 'time: point'
+    grid_mapping: rotated_pole
+    long_name: Height of boundary layer
+    standard_name: atmosphere_boundary_layer_thickness
+    units: m
