@@ -1,2 +1,2 @@
 # wrf2cmor
-Convert WRF climate model to CMORized data
+Convert WRF climate model output to CMORized data
