@@ -22,43 +22,40 @@
 # ------------------------------------------------------------------------
 
 import argparse
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    '-f', '--files', dest='globfiles',
-    help='Regular expression to be parsed by python to get the input files to process', metavar='REGEXP'
+    '-i', '--indir',
+    help='Input file directory'
 )
 parser.add_argument(
-    '--from-file', dest='filelist', default='',
-    help='Text file containing the input files. One per row', metavar='FILELIST.txt'
+    '-o', '--outdir',
+    help='Output file directory'
+)
+parser.add_argument(
+    '-c', '--constfile', default='constants.yml',
+    help='Yaml text file containing all input settings',
+)
+parser.add_argument(
+    '-y', '--year',
+    help='Year to be cmorized'
+)
+parser.add_argument(
+    '-f', '--filebase',
+    help='Input file base names. Default all. Use multiple -f for more names.'
+)
+parser.add_argument(
+    '-d', '--domain',
+    help='Input domains numbers to use. Default all. Use multiple -d for more domains.'
 )
 parser.add_argument(
     '-v', '--variables', dest='vars',
-    help='Variables to extract. Apart from those defined in the file, you can ask for any of the following derived variables: MSLP, U10ER, V10ER, WIND', metavar='VAR1[,VAR2,...]'
-)
-parser.add_argument(
-    '-t', '--variable-table', dest='vtable',
-    help='Table for translating WRF names into IPCC standard names', metavar='variable.table'
-)
-parser.add_argument(
-    '-a', '--attributes', dest='attributes',
-    help='Table for setting the global attributes of the file', metavar='atributes.file'
+    help='Variable to extract. Default all. Use comma separated list without space for multiple vars.'
 )
 parser.add_argument(
     '-q', '--quiet', action='store_true', default = False,
     help='Run quietly'
-)
-parser.add_argument(
-    '--time-units', dest='time_units', default='days since 1999-01-01_00:00:00',
-    help='Units for the time axis', metavar='Days/Hours since YYYY-MM-DD_hh:mm:ss'
-)
-parser.add_argument(
-    '-o', '--output', dest='OFILE', metavar='OUTPUTFILE.nc',
-    help='Output file name'
-)
-parser.add_argument(
-    '--output-pattern', dest='OUTPUT_PATTERN', metavar='[varcf]_[varwrf]_[level]_[firsttime]_[lasttime]_experiment.nc',
-    help='Output pattern. Patterns recognized are currently of the form "[varcf]_[varwrf]_[firsttime]_[lasttime]_experiment.nc". Firsttime and lasttime are replaced by datetimes of the form YYYYmmddHH'
 )
 
 args = parser.parse_args()

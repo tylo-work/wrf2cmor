@@ -25,6 +25,7 @@ import os
 import glob
 import netCDF4
 import wrfcmor_tabs as tabs
+import wrfcmor_cli as cli
 import numpy as np
 from datetime import datetime
 import signal
@@ -238,4 +239,4 @@ if __name__ == '__main__':
 
     #cmorize(inroot, outroot, 2014, domain_nums=[2], filetypes=['wrfxtrm'])
     #cmorize(inroot, outroot, 2014, domain_nums=[2], filetypes=['wrfcdx'], variables=['capemax', 'cinmax'])
-    cmorize(inroot, outroot, 2014, domain_nums=[1], filetypes=['wrfcdx'], variables=['ps'])
+    cmorize(inroot, outroot, cli.args.year, domain_nums=[1], filetypes=['wrfcdx'], variables=['ps'])

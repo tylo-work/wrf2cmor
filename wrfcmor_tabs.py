@@ -22,6 +22,7 @@
 # ------------------------------------------------------------------------
 
 import yaml
+import wrfcmor_cli as cli
 
 def full_vname(var, plev_num):
     return var + str(constants['plevels'][plev_num - 1]) if plev_num > 0 else var
@@ -46,10 +47,7 @@ def dst_file_year(var, domain_num, year, plev_num=0):
                                                                      year, constants['from_date'],
                                                                      year, constants['to_date'])
 
-
-### Init module ###
-
-with open('constants.yml') as yaml_file:
+with open(cli.args.constfile) as yaml_file:
     constants = yaml.load(yaml_file, Loader=yaml.FullLoader)
 
 # Remap back 3d vars to basename
