@@ -24,13 +24,15 @@
 mainstring: 'ECMWF-ERAINT_evaluation_r1i1p1_BCCR-WRF381BF_x1n2v1'
 from_date:  '010100'
 to_date:    '123123'
+compress:   1
 
-domains:
-    1: EUR-15
-    2: ALP-3
+domains:        {1: EUR-15, 2: ALP-3}
     
 plevels:        [1000, 925, 850, 700, 500, 200]
 pvars3d:        [zg, ta, hus, ua, va, wa]
+
+src_timefmt:    '%Y-%m-%d_%H:%M:%S'
+src_timevar:    Times
 dst_timevar:    time
 dst_timedim:    time
 dst_plevvar:    plev

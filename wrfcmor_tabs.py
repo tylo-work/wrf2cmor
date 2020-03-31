@@ -23,12 +23,6 @@
 
 import yaml
 
-compress = 4
-src_filetype = ['wrfpress', 'wrfcdx', 'wrfxtrm']
-src_time_var = 'Times'
-src_timeformat = '%Y-%m-%d_%H:%M:%S'
-
-
 def full_vname(var, plev_num):
     return var + str(constants['plevels'][plev_num - 1]) if plev_num > 0 else var
 
@@ -63,3 +57,5 @@ pvars3d = {'%s%s' % (v, p): v for v in constants['pvars3d'] for p in constants['
 
 # Flatten the file_vars-map to varmap only
 varmap = {k: v for m, d in constants['file_vars'].items() for k, v in d.items()}
+
+compress = constants['compress']

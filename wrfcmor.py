@@ -46,7 +46,7 @@ def bytes2str(arr):
 
 def process_values(vname: str, plev_num: int, values, dst):
     if vname == tabs.constants['dst_timevar']:
-        values = [datetime.strptime(bytes2str(s), tabs.src_timeformat) for s in values]
+        values = [datetime.strptime(bytes2str(s), tabs.constants['src_timefmt']) for s in values]
         values = netCDF4.date2num(values, units=tabs.constants['dst_reftime'])
     elif vname == 'evspsblpot':
         values[np.isnan(values)] = tabs.constants['missing_value']  # replaces all NaN with missing value
@@ -105,8 +105,8 @@ def get_plevels_range(vname):
         return 0, 1
 
 
-def split_to_monthly_vars(src_root: str, dst_root: str, filetype: str, domain_num: int, 
-                         year: int, month: int, included_vars=None, included_plev_nums=None):
+def split_to_monthly_vars(src_root: str, dst_root: str, year: int, domain_num: int,
+                          filetype: str, month: int, included_vars=None, included_plev_nums=None):
     """Split and convert a netCDF Classic (3/4) file to CMOR specs"""
     global current_file
     infiles = os.path.join(src_root, tabs.src_file_pattern(filetype, domain_num, year, month))
@@ -132,8 +132,13 @@ def split_to_monthly_vars(src_root: str, dst_root: str, filetype: str, domain_nu
                     continue
                 outfile = os.path.join(dst_root, tabs.dst_file_month(vname, domain_num, year, month, plev_num))
                 outfinal = os.path.join(dst_root, tabs.dst_file_year(vname, domain_num, year, plev_num))
-                if os.path.isfile(outfile) or os.path.isfile(outfinal):
-                    print('skipping existing', outfile)
+                if os.path.isfile(outfile):
+                    print('')
+                    print('skipping existing:', outfile)
+                    continue
+                if os.path.isfile(outfinal):
+                    print('')
+                    print('skipping existing:', outfinal)
                     continue
                 if values is None:
                     values = src_var[:]
@@ -147,6 +152,7 @@ def split_to_monthly_vars(src_root: str, dst_root: str, filetype: str, domain_nu
                     
                     vname_full = tabs.full_vname(vname, plev_num)
                     print(' -->', vname_full, tabs.constants['domains'][domain_num], year, month, dst_dims, dst_values.dtype, end='', flush=True)
+
                     # Add the main variable
                     var_out = dst.createVariable(vname_full, dst_values.dtype, dst_dims, fill_value=tabs.constants['missing_value'],
                                                  zlib=(tabs.compress > 0), complevel=tabs.compress)
@@ -154,7 +160,7 @@ def split_to_monthly_vars(src_root: str, dst_root: str, filetype: str, domain_nu
 
                     # Add time variable
                     if time_values is None:
-                        time_values = process_values(tabs.constants['dst_timevar'], 0, src.variables[tabs.src_time_var][:], None)
+                        time_values = process_values(tabs.constants['dst_timevar'], 0, src.variables[tabs.constants['src_timevar']][:], None)
                     var_out = dst.createVariable(tabs.constants['dst_timevar'], time_values.dtype, (tabs.constants['dst_timedim'],),
                                                  zlib=(tabs.compress > 0), complevel=tabs.compress)
                     var_out[:] = time_values
@@ -162,7 +168,8 @@ def split_to_monthly_vars(src_root: str, dst_root: str, filetype: str, domain_nu
                 current_file = None
 
 
-def merge_monthly_to_oneyear_vars(src_root: str, dst_root: str, domain_num: int, year: int, included_vars=None, included_plev_nums=None):
+def merge_monthly_to_oneyear_vars(src_root: str, dst_root: str, year: int, domain_num: int,
+                                  included_vars=None, included_plev_nums=None):
     """Merge year"""
     global current_file
     print('CMORize merge:', src_root, '-->', dst_root)
@@ -176,12 +183,11 @@ def merge_monthly_to_oneyear_vars(src_root: str, dst_root: str, domain_num: int,
                 continue
             outfile = os.path.join(dst_root, tabs.dst_file_year(vname, domain_num, year, plev_num))
             if os.path.isfile(outfile):
-                print('skipping existing', outfile)
+                print(' - final exists:', os.path.basename(outfile))
                 continue
             infiles_pattern = os.path.join(src_root, tabs.dst_file_month_pattern(vname, domain_num, year, plev_num))
             infiles = glob.glob(infiles_pattern)
             if infiles == []:
-                #print('skipping non-existing', infiles_pattern)
                 continue
             print('output:', os.path.basename(outfile))
             current_file = outfile
@@ -199,7 +205,8 @@ def merge_monthly_to_oneyear_vars(src_root: str, dst_root: str, domain_num: int,
                     print(' var:', vname_full, end='...', flush=True)
                     values = var_in[:]
                     var_out = dst.createVariable(vname_full, values.dtype, var_in.dimensions,
-                                                 zlib=(tabs.compress > 0), complevel=tabs.compress)
+                                                 zlib=(tabs.compress > 0), complevel=tabs.compress,
+                                                 chunksizes=None)
                     print(' write', end='...', flush=True)
                     var_out[:] = values
                     vn = tabs.pvars3d[vname_full] if vname_full in tabs.pvars3d else vname_full
@@ -210,28 +217,25 @@ def merge_monthly_to_oneyear_vars(src_root: str, dst_root: str, domain_num: int,
                 os.remove(f)
 
 
-def cmorize(inroot, outroot, ftype, domain_num, year, vars=None, plevs=None):
-    for month in range(1, 12+1):
-        split_to_monthly_vars(inroot, outroot, ftype, domain_num, year, month, included_vars=vars, included_plev_nums=plevs)
-    merge_monthly_to_oneyear_vars(outroot, outroot, domain_num, year, included_vars=vars, included_plev_nums=plevs)
+def cmorize(inroot, outroot, year, domain_nums=None, filetypes=None, variables=None, plevel_nums=None):
+    for dom in tabs.constants['domains']:
+        if domain_nums and dom not in domain_nums:
+            continue
+        for ftype in tabs.constants['file_vars']:
+            if filetypes and ftype not in filetypes:
+                continue
+            for month in range(1, 12+1):
+                split_to_monthly_vars(inroot, outroot, year, dom, ftype, month, included_vars=variables, included_plev_nums=plevel_nums)
+            merge_monthly_to_oneyear_vars(outroot, outroot, year, dom, included_vars=variables, included_plev_nums=plevel_nums)
 
 
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    #signal.pause()
 
     inroot = '/nird/projects/NS9001K/tyge/RAW/2014'
     outroot = '/nird/projects/NS9001K/tyge/wrf_cmor/2014'
 
-    #split_to_monthly_vars(inroot, outroot, 'wrfpress', 1, 2014, 1, included_vars=['tas', 'zg']) # , 'pr', 'wsgsmax', 'uas', 'vas', 'ua100m', 'va100m'])
-    #split_to_monthly_vars(inroot, outroot, 'wrfcdx', 1, 2014, 1, included_vars=['ts', 'ps'])
-
-    #vars = ['evspsblpot'] # , 'ts']
-    #vars = ['ts', 'ps']
-    #ftype = 'wrfcdx'
-    
-    vars = None # ['hus', 'ua']
-    plevs = None # [1, 2, 3]
-    
-    cmorize(inroot, outroot, 'wrfpress', 1, 2014)
+    #cmorize(inroot, outroot, 2014, domain_nums=[2], filetypes=['wrfxtrm'])
+    #cmorize(inroot, outroot, 2014, domain_nums=[2], filetypes=['wrfcdx'], variables=['capemax', 'cinmax'])
+    cmorize(inroot, outroot, 2014, domain_nums=[1], filetypes=['wrfcdx'], variables=['ps'])
