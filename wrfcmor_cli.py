@@ -43,15 +43,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '--all', action='store_true',
-    help='Process all years, files, domains, and variables'
-)
-parser.add_argument(
     '-y', '--year', required=True,
     help='Year to be cmorized'
 )
 parser.add_argument(
-    '-f', '--filebase',
+    '-b', '--filebase',
     help='Input file base names. Default all. Single or comma separated list without space, e.g: wrfxtrm,wrfcdx'
 )
 parser.add_argument(
