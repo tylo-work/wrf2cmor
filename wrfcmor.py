@@ -111,7 +111,6 @@ def split_to_monthly_vars(src_root: str, dst_root: str, year: int, domain_num: i
     """Split and convert a netCDF Classic (3/4) file to CMOR specs"""
     global current_file
     infiles = os.path.join(src_root, tabs.src_file_pattern(filetype, domain_num, year, month))
-    
     with netCDF4.MFDataset(infiles) as src:
         print('CMORize split:', src_root, '-->', dst_root)
         print('inputs:', os.path.basename(infiles))
@@ -234,9 +233,18 @@ def cmorize(inroot, outroot, year, domain_nums=None, filetypes=None, variables=N
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
 
-    inroot = '/nird/projects/NS9001K/tyge/RAW/2014'
-    outroot = '/nird/projects/NS9001K/tyge/wrf_cmor/2014'
-
-    #cmorize(inroot, outroot, 2014, domain_nums=[2], filetypes=['wrfxtrm'])
+    args = cli.args
+    if not (args.all or args.domain or args.filebase or args.variables):
+        print('error: you must specify at least one of: --all, -f, -d, or -v')
+        print(' e.g.: -i /nird/projects/NS9001K/tyge/RAW/2014 -o /nird/projects/NS9001K/tyge/wrf_cmor/2014 -y 2014 -d 1 -f wrfcdx -v ps')
+        cli.parser.print_help()
+        
+        exit()
+    year = int(args.year)
+    filebases = args.filebase.split(',') if args.filebase else None
+    domains = [int(d) for d in args.domain.split(',')] if args.domain else None
+    variables = args.variables.split(',') if args.variables else None
+    cmorize(args.indir, args.outdir, year, domain_nums=domains, filetypes=filebases)
+    #print(year, filebases, domains, variables)
     #cmorize(inroot, outroot, 2014, domain_nums=[2], filetypes=['wrfcdx'], variables=['capemax', 'cinmax'])
-    cmorize(inroot, outroot, cli.args.year, domain_nums=[1], filetypes=['wrfcdx'], variables=['ps'])
+    #cmorize(inroot, outroot, 2014, domain_nums=[1], filetypes=['wrfcdx'], variables=['ps'])
